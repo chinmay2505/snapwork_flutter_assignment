@@ -58,6 +58,7 @@ class __MonthsState extends State<_Months> {
             padding: const EdgeInsets.all(AppSpacing.s),
             child: Text(
               _months[index]["name"],
+              textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyText1!.copyWith(
                   color: _months[index]["value"] == widget.selectedMonth
                       ? Theme.of(context).primaryColor

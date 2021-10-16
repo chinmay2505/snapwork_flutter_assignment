@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:snapwork_events_app/config/themes/bloc/bloc.dart';
 import 'package:snapwork_events_app/config/themes/theme_config.dart';
+import 'package:snapwork_events_app/modules/create_event/screens/create_event_screen.dart';
 import 'package:snapwork_events_app/modules/events_list/bloc/events_list_bloc.dart';
 import 'package:snapwork_events_app/shared/screens/months.dart';
 import 'package:snapwork_events_app/shared/screens/years.dart';
@@ -131,27 +132,40 @@ class _EventsListState extends State<EventsList> {
                   color: Colors.black,
                 ),
                 itemBuilder: (BuildContext context, int index) {
-                  return IntrinsicHeight(
-                    child: Row(
-                      children: <Widget>[
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              state.events[index].day.toString(),
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                            Text(
-                              state.selectedMonth["name"],
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(AppSpacing.xs),
-                          child: VerticalDivider(thickness: 2.0),
-                        ),
-                      ],
+                  return InkWell(
+                    onTap: () => _navigateToCreateEventScreen(state, index),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        children: <Widget>[
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                state.events[index].day.toString(),
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                              Text(
+                                state.selectedMonth["name"],
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(AppSpacing.xs),
+                            child: VerticalDivider(thickness: 2.0),
+                          ),
+                          if (state.events[index].title.isNotEmpty)
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                  "${state.events[index].time} ${state.events[index].day}-${state.selectedMonth['name']}-${state.selectedYear}",
+                                ),
+                                Text("${state.events[index].title}"),
+                              ],
+                            )
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -163,6 +177,24 @@ class _EventsListState extends State<EventsList> {
     }
 
     return _eventsWidget;
+  }
+
+  /// When user taps on any item in the list to add/update the event
+  void _navigateToCreateEventScreen(EventsLoaded state, int index) {
+    var _eventsListBloc = BlocProvider.of<EventsListBloc>(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider<EventsListBloc>.value(
+          value: _eventsListBloc,
+          child: CreateEventScreen(
+            day: state.events[index],
+            selectedYear: state.selectedYear,
+            selectedMonth: state.selectedMonth,
+          ),
+        ),
+      ),
+    );
   }
 
   /// When user taps on [Year] button

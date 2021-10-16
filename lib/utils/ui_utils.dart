@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:snapwork_events_app/config/themes/theme_config.dart';
 import 'package:snapwork_events_app/config/themes/bloc/bloc.dart';
 
@@ -178,6 +179,109 @@ class DisplayInputBoxIcon extends StatelessWidget {
         color: Theme.of(context).primaryColor,
       ),
     );
+  }
+}
+
+/// To display the Multi line input box
+class AppInputMultiline extends StatelessWidget {
+  final ThemeState themeState;
+  final String? placeholderText;
+  final TextInputType? textInputType;
+  final TextEditingController? controller;
+  final String? errorText;
+  final bool enabled;
+  final ValueChanged<String>? onChanged;
+  final FocusNode? focusNode;
+  final BoxDecoration? boxDecoration;
+  final VoidCallback? onEditingComplete;
+  final int? maxLength;
+
+  const AppInputMultiline({
+    required this.themeState,
+    required this.placeholderText,
+    required this.controller,
+    Key? key,
+    this.textInputType,
+    this.errorText,
+    this.enabled = true,
+    this.onChanged,
+    this.focusNode,
+    this.boxDecoration,
+    this.onEditingComplete,
+    this.maxLength,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          height: AppScreenConfig.screenHeight! * 0.2,
+          decoration: boxDecoration ??
+              _getInputFormDecoration(context, themeState, errorText),
+          margin: const EdgeInsets.symmetric(vertical: 10.0),
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: TextFormField(
+                  key: key ?? UniqueKey(),
+                  maxLines: 10,
+                  maxLength: maxLength,
+                  maxLengthEnforcement: maxLength != null && maxLength! > 0
+                      ? MaxLengthEnforcement.enforced
+                      : MaxLengthEnforcement.none,
+                  focusNode: focusNode,
+                  controller: controller,
+                  keyboardType: textInputType,
+                  enabled: enabled,
+                  cursorColor: Theme.of(context).textSelectionTheme.cursorColor,
+                  onChanged: onChanged,
+                  onEditingComplete: onEditingComplete,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: placeholderText,
+                    counterText: "",
+                    hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: themeState.themeData['placeHolderTextColor']
+                            as Color?),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (errorText != null)
+          AppInputLabelText(
+            themeState: themeState,
+            labelText: errorText!,
+            isErrorLabel: true,
+          ),
+      ],
+    );
+  }
+
+  BoxDecoration _getInputFormDecoration(
+      BuildContext context, ThemeState themeState, String? errorText) {
+    return BoxDecoration(
+      border: Border.all(
+        color: (errorText == null)
+            ? themeState.themeData['inputBoxBorderColor'] as Color
+            : themeState.themeData['errorColor'] as Color,
+        width: 1.0,
+      ),
+      borderRadius: BorderRadius.circular(10.0),
+      color: Theme.of(context).brightness == Brightness.light
+          ? Colors.transparent
+          : themeState.themeData['warningBackground'] as Color?,
+    );
+  }
+
+  Object? getBorderColor(String? errorText, ThemeState themeState) {
+    return (errorText == null)
+        ? themeState.themeData['inputBoxBorderColor']
+        : themeState.themeData['errorColor'];
   }
 }
 

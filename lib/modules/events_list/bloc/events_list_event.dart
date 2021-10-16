@@ -15,3 +15,21 @@ class FetchEvents extends EventsListEvent {
   @override
   List<Object> get props => [year, month];
 }
+
+/// Add event for a specific day
+class AddEvent extends EventsListEvent {
+  final int day;
+  final String title;
+  final String time;
+  final String description;
+
+  const AddEvent({
+    required this.day,
+    required this.title,
+    this.time = "",
+    this.description = "",
+  });
+
+  @override
+  List<Object?> get props => [title, time, description];
+}

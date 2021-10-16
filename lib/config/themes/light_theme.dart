@@ -33,7 +33,7 @@ final ThemeData lightThemeData = ThemeData(
   appBarTheme: const AppBarTheme(
     centerTitle: true,
     backgroundColor: LightAppColors.primary,
-    iconTheme: IconThemeData(color: LightAppColors.primary),
+    iconTheme: IconThemeData(color: LightAppColors.primaryButtonTextColor),
     textTheme: TextTheme(
       headline6: TextStyle(
         fontFamily: "Roboto",

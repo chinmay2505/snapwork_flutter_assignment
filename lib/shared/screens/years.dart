@@ -62,6 +62,7 @@ class __YearsState extends State<_Years> {
             padding: const EdgeInsets.all(AppSpacing.s),
             child: Text(
               _years[index].toString(),
+              textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyText1!.copyWith(
                   color: _years[index] == widget.selectedYear
                       ? Theme.of(context).primaryColor
