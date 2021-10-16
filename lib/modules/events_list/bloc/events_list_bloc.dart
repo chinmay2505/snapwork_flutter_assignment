@@ -25,6 +25,11 @@ class EventsListBloc extends Bloc<EventsListEvent, EventsListState> {
   }
 
   Stream<EventsListState> _mapFetchEventsToState(FetchEvents event) async* {
+    EventsLoading(
+      currentYear: event.year,
+      currentMonth: AppConstants.months[event.month - 1],
+    );
+
     List<int> _allDays = _daysInMonth(event.year, event.month);
     Map<String, dynamic> _storedEvents = Application.storageService!.eventsList;
     List<Days> _days = [];

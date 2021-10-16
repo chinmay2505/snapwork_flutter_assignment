@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapwork_events_app/config/themes/bloc/bloc.dart';
 import 'package:snapwork_events_app/config/themes/theme_config.dart';
 import 'package:snapwork_events_app/modules/events_list/bloc/events_list_bloc.dart';
+import 'package:snapwork_events_app/shared/screens/months.dart';
+import 'package:snapwork_events_app/shared/screens/years.dart';
 import 'package:snapwork_events_app/utils/ui_utils.dart';
 import 'package:snapwork_events_app/widgets/app_buttons.dart';
 
@@ -97,14 +99,14 @@ class _EventsListState extends State<EventsList> {
             minWidth: 100.0,
             themeState: widget.themeState,
             message: state.selectedYear.toString(),
-            onPressed: () {},
+            onPressed: () => _openYearsList(state),
           ),
           Spacer(),
           AppElevatedButton(
             minWidth: 100.0,
             themeState: widget.themeState,
             message: state.selectedMonth!["name"],
-            onPressed: () {},
+            onPressed: () => _openMonthsList(state),
           ),
         ],
       ),
@@ -161,5 +163,34 @@ class _EventsListState extends State<EventsList> {
     }
 
     return _eventsWidget;
+  }
+
+  /// When user taps on [Year] button
+  void _openYearsList(EventsListState state) async {
+    var result = await showAppModalBottomSheet(
+      context,
+      YearsList(selectedYear: state.selectedYear!),
+      bottomSheetHeight: AppScreenConfig.screenHeight! * 0.5,
+    );
+
+    if (result != null && result["selected_year"] != state.selectedYear) {
+      BlocProvider.of<EventsListBloc>(context).add(FetchEvents(
+          year: result["selected_year"], month: state.selectedMonth!["value"]));
+    }
+  }
+
+  /// When user taps on [Month] button
+  void _openMonthsList(EventsListState state) async {
+    var result = await showAppModalBottomSheet(
+      context,
+      MonthsList(selectedMonth: state.selectedMonth!["value"]),
+      bottomSheetHeight: AppScreenConfig.screenHeight! * 0.5,
+    );
+
+    if (result != null &&
+        result["selected_month"] != state.selectedMonth!["value"]) {
+      BlocProvider.of<EventsListBloc>(context).add(FetchEvents(
+          year: state.selectedYear!, month: result["selected_month"]));
+    }
   }
 }

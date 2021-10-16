@@ -180,3 +180,46 @@ class DisplayInputBoxIcon extends StatelessWidget {
     );
   }
 }
+
+/// Common Method to display the Bottom sheet in flutter
+Future<T?> showAppModalBottomSheet<T>(BuildContext context, Widget widget,
+    {double? bottomSheetHeight,
+    bool removePadding = false,
+    Color? backgroundColor}) {
+  return showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: backgroundColor,
+    builder: (BuildContext context) {
+      return bottomSheetHeight == null
+          ? SafeArea(
+              top: false,
+              child: Wrap(
+                children: <Widget>[
+                  Padding(
+                    padding: (!removePadding)
+                        ? const EdgeInsets.fromLTRB(AppSpacing.m, AppSpacing.s,
+                            AppSpacing.m, AppSpacing.s)
+                        : const EdgeInsets.all(0.0),
+                    child: widget,
+                  ),
+                ],
+              ),
+            )
+          : SafeArea(
+              top: false,
+              child: SizedBox(
+                height: bottomSheetHeight,
+                width: double.infinity,
+                child: Padding(
+                  padding: (!removePadding)
+                      ? const EdgeInsets.fromLTRB(AppSpacing.m, AppSpacing.s,
+                          AppSpacing.m, AppSpacing.s)
+                      : const EdgeInsets.all(0.0),
+                  child: widget,
+                ),
+              ),
+            );
+    },
+  );
+}
